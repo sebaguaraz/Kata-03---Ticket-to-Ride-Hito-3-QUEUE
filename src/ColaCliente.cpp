@@ -64,23 +64,7 @@ void ColaCliente::MostrarClienteAtendidos(){
     {
         clientes->clienteinfo();
     }
-    
-    
 }
-
-
-void ColaCliente::EliminarClienteDeCola(){
-    
-        shared_ptr<Client> cliente = ColaClientes.front();
-        ColaClientes.pop();
-        marcarClientesAtendidos(cliente);//se deberia marcar el cliente si el tecnico ya lo atendio
-
-        
-    
-
-
-}
-
 
 void ColaCliente::mostrarClientesActual(std::shared_ptr<Client> objetocliente){
     objetocliente->clienteinfo();
