@@ -322,9 +322,11 @@ void dijkstra(int graph[MAX_NODES][MAX_NODES], int src)
          * porque sabemos que la distancia del nodo 0 es 0, entonces es diferente a INFINITO, la 4ta condición se cumple porque
          * valida si la suma de la distancia del nodo 0 (que es 0) mas la distancia del nodo 0 al nodo 1 (que es 2), es menor
          * a la distancia acumulada del nodo 1 (que es INFINITO porque no se estableció todavía), entonces lo que hace
-         * es inicializar la distancia del nodo 1 como la suma de la distancia del nodo 0 (que es 0) y la distancia del nodo 0 al nodo 1 (que es 2)
+         * es inicializar la distancia del nodo 1 como la suma de la distancia del nodo 0 (que es 0) y 
+         * la distancia del nodo 0 al nodo 1 (que es 2)
          * 
-         * Y así verifica todo lo demas nodos. Cabe aclarar que el acumulador de distancias es a partir del nodo en el que se inicialize
+         * Y así verifica todo lo demas nodos. Cabe aclarar que el acumulador de distancias es a partir del nodo en 
+         * el que se inicialize
          * 
          */
         for (int nodo = 0; nodo < MAX_NODES; nodo++)
@@ -386,7 +388,7 @@ int main()
 
     do
     {
-        system("cls");
+        // system("cls");
         cout << ".   SISTEMA DE TICKETS   ." << endl;
         cout << "1- Ingrese el cliente." << endl;
         cout << "2- Ingrese el tecnico." << endl;
@@ -406,33 +408,40 @@ int main()
         switch (opcion)
         {
         case 1:
+            // yesi katy
             ingresarCliente(queueclientes, objetocliente);
             break;
         case 2:
+            // yesi katy
             ingresarTecnico(tecnico);
             break;
         case 3:
+            // seba
             crearTicket(queueclientes, listadetickets, tecnico);
             break;
-        case 4:
+        case 4: // nahu
             mostrarClienteParaAtender(queueclientes, objetocliente);
             break;
-        case 5:
+        case 5: // nahu
             mostrarClientesPendientes(queueclientes);
             break;
-        case 6:
+        case 6: // tade
             mostrarClientesAtendidos(queueclientes);
             break;
         case 7:
+            // seba
             atenderTicket(queueclientes, listadetickets, tecnico, objetomensaje);
             break;
         case 8:
+            // nahu
             mostrarTicketsCliente(queueclientes, listadetickets);
             break;
         case 9:
+            // seba
             darBajaCliente(queueclientes, listadetickets);
             break;
         case 10:
+            // tade 
             aloritmoDijkstra();
             break;
         case 0:
