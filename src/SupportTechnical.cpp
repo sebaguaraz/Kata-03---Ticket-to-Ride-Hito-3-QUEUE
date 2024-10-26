@@ -42,8 +42,7 @@ void SupportTechnical::Atender(shared_ptr<SupportTechnical> objetotecnico, vecto
 
 }
 
-//ACA HAY ACOPLAMIENTO FUERTE PORQUE EL ALTO NIVEL(TECNICO) DEPENDE DE LAS IMPLEMENTACIONES(WHATSAPP)
-//DEBERIA SER UN POCO MAS GENERICO ESTE METODO PORQUE SI EL ALGUN MOMENTO SE DESEA ENVIAR POR INSTAGRAM, HAY Q MODIFICAR LO EXISTENTE
+
 shared_ptr<IMessage> SupportTechnical::EnviarMensaje(shared_ptr<SupportTechnical> tecnico, string mensaje) {
     // Verificar que el mensaje no esté vacío
     if (mensaje.empty()) {
