@@ -32,6 +32,7 @@ public:
     void setname(string name);
     string gettelefono();
     string getname();
+    string getnotificaciones();
     void tecnicoinfo();
     void Atender(shared_ptr<SupportTechnical> objetotecnico,vector<shared_ptr<Ticket>> ticketsCliente);
     shared_ptr<Ticket> CrearTicket(shared_ptr<Client> objetocliente, string asunto, string notificaciones);

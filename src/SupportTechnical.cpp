@@ -11,6 +11,7 @@ void SupportTechnical::setname(string name) { this->name = name; }
 
 string SupportTechnical::gettelefono() { return telefono; }
 string SupportTechnical::getname() { return name; }
+string SupportTechnical::getnotificaciones() { return notificaciones; }
 
 void SupportTechnical::tecnicoinfo() {
     cout << "**** DATOS TECNICO: " << endl;
@@ -22,8 +23,7 @@ void SupportTechnical::tecnicoinfo() {
 shared_ptr<Ticket> SupportTechnical::CrearTicket(shared_ptr<Client> objetocliente, string asunto, string notificaciones){
     this->notificaciones=notificaciones;
     shared_ptr<Ticket> ticket= make_shared<Ticket>(objetocliente, asunto);
-
-
+    ticket->setnotificaciones(notificaciones);
 
     return ticket;
     

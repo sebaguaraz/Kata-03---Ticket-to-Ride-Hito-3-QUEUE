@@ -9,27 +9,26 @@ Ticket::Ticket(shared_ptr<Client> objetocliente, string asunto) {
     incidente = make_shared<Incidente>(asunto, objetocliente);
 }
 Ticket::~Ticket(){
-
 };
 
 
 void Ticket::AddTecnico(shared_ptr<SupportTechnical> objetotecnico) {
-
-    
     tecnico = objetotecnico;
-        
-
-    
 }
 
+void Ticket::setnotificaciones(string notificaciones) {
+    this->notificaciones=notificaciones;
+}
 
+string Ticket::getnotificaciones() {
+    return notificaciones;
+}
 
 int Ticket::getid(){
     return id;
 }
 
 void Ticket::mostrarTicket() {
-
     incidente->Incidenteinfo();
     cliente->clienteinfo();
     if (tecnico!=nullptr)
@@ -48,16 +47,12 @@ shared_ptr<SupportTechnical> Ticket::gettecnico(){
 };
 
 shared_ptr<Client> Ticket::getcliente() {
-
     return cliente;
-
 }
 
 
 shared_ptr<Incidente> Ticket::getincidente() {
-
     return incidente;
-
 }
 
 
@@ -67,9 +62,7 @@ void Ticket::setEstado(string estado) {
 }
 
 string Ticket::getEstado() {
-
     return estado;
-
 }
 
 
@@ -85,30 +78,31 @@ void Ticket::mostrarmensajes() {
     }
 
     for (const auto& msg : listamensajes) {
-        if (msg->getTecnico() != nullptr) {  // Verifica que el técnico no sea nulo
-            std::cout << "Mensaje de tecnico " << msg->getTecnico()->getname() << ": " 
-                      << msg->getMessageTecnico() << std::endl;
-        }
-
-        if (msg->getClient() != nullptr) {  // Verifica que el cliente no sea nulo
-            std::cout << "Mensaje del cliente " << msg->getClient()->getname() << ": " 
-                      << msg->getMessageCliente() << std::endl;
-        }
-        cout << msg->notificar();
-        std::cout << std::endl;  // Línea separadora
-        std::cout << "----------------------------------------" << std::endl;  // Línea separadora
+    if (!msg) {  // Verifica que el mensaje no sea nulo
+        std::cerr << "Error: mensaje nulo en la lista de mensajes." << std::endl;
+        continue;  // Salta a la siguiente iteración
     }
+
+    if (msg->getTecnico() != nullptr) {  // Verifica que el técnico no sea nulo
+        std::cout << "Mensaje de tecnico " << msg->getTecnico()->getname() << ": " 
+                  << msg->getMessageTecnico() << std::endl;
+    }
+
+    if (msg->getClient() != nullptr) {  // Verifica que el cliente no sea nulo
+        std::cout << "Mensaje del cliente " << msg->getClient()->getname() << ": " 
+                  << msg->getMessageCliente() << std::endl;
+    }
+    std::cout << msg->notificar();
+    std::cout << std::endl;
+    std::cout << "----------------------------------------" << std::endl;
+}
 }
 
 void Ticket::AlertClient(){
-
     cliente->Alert();
 }
 
 
 void Ticket::AlertTechnical(){
-
     tecnico->Alert();
-    
-
 }

@@ -1,11 +1,10 @@
-//FALTA AGREGAR PATRONNN PARA VER POR DONDE ENVIAR LOS MENSAJE WHATSAPP, FACEBOOK, INSTAGRAM...
-//AGREGAR METODO PARA ACTUALIZAR EL TICKET, YA SEA CLIENTE: ASUNTO, PRIORIDAD ETC o TECNICO: CAMBIAR ESTADO
-
-
-
+// FALTA AGREGAR PATRONNN PARA VER POR DONDE ENVIAR LOS MENSAJE WHATSAPP, FACEBOOK, INSTAGRAM...
+// AGREGAR METODO PARA ACTUALIZAR EL TICKET, YA SEA CLIENTE: ASUNTO, PRIORIDAD ETC o TECNICO: CAMBIAR ESTADO
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <string>
+
 #include <Client.h>
 #include <ColaCliente.h>
 #include <Incidente.h>
@@ -16,21 +15,14 @@
 #include <Whatsapp.h>
 #include <Facebook.h>
 
-#include <string>
-
 using namespace std;
 #define MAX_NODES 7
 
-
-void ingresarCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Client> &objetocliente)
-{
+void ingresarCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Client> &objetocliente) {
     string name1;
     int dni;
 
-
-    
     objetocliente = make_shared<Client>();
-    
 
     cout << "Nombre del cliente: ";
     getline(cin, name1);
@@ -41,17 +33,12 @@ void ingresarCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Client> 
     objetocliente->setdni(dni);
     queueclientes->agregarCliente(objetocliente);
     cout << "Cliente agregado a la cola!" << endl;
-
 }
 
-void ingresarTecnico(shared_ptr<SupportTechnical> &tecnico)
-{
+void ingresarTecnico(shared_ptr<SupportTechnical> &tecnico) {
     string name2, telefono;
-
     // Inicializar el técnico si no lo está
-
     tecnico = make_shared<SupportTechnical>();
-    
 
     cout << "Nombre del tecnico: ";
     getline(cin, name2);
@@ -60,13 +47,10 @@ void ingresarTecnico(shared_ptr<SupportTechnical> &tecnico)
     tecnico->setname(name2);
     tecnico->settelefono(telefono);
     cout << "Tecnico creado!" << endl;
-
 }
 
-void crearTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets> &listadetickets, shared_ptr<SupportTechnical> &tecnico)
-{
-    if (!queueclientes->IsEmpty())
-    {
+void crearTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets> &listadetickets, shared_ptr<SupportTechnical> &tecnico) {
+    if (!queueclientes->IsEmpty()) {
         queueclientes->mostrarClientesPendientes();
         int idCliente;
         cout << "Ingrese el ID del cliente para crear tickets: ";
@@ -74,19 +58,15 @@ void crearTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets
         cin.ignore();
 
         shared_ptr<Client> clienteSeleccionado = queueclientes->BuscarClientePorID(idCliente);
-        if (clienteSeleccionado != nullptr)
-        {
+        if (clienteSeleccionado != nullptr) {
             string asunto, notificaciones, valor;
-            do
-            {
+            do {
                 cout << "Asunto del problema: ";
                 getline(cin, asunto);
-                do
-                {
+                do {
                     cout << "Por donde desea que se envien las notificaciones? (Whatsapp/Facebook): ";
                     getline(cin, notificaciones);
-                    if (notificaciones != "Whatsapp" && notificaciones != "Facebook")
-                    {
+                    if (notificaciones != "Whatsapp" && notificaciones != "Facebook") {
                         cout << "Opcion no valida. Intente nuevamente." << endl;
                     }
                 } while (notificaciones != "Whatsapp" && notificaciones != "Facebook");
@@ -95,73 +75,46 @@ void crearTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets
                 listadetickets->agregarTicket(ticket);
                 ticket->setEstado("abierto");
                 cout << "Ticket creado para el cliente!" << endl;
-
                 cout << "Desea crear otro ticket para este cliente? (si/no): ";
                 cin >> valor;
                 cin.ignore();
             } while (valor != "no");
-        }
-        else
-        {
-            cout << "Cliente no encontrado en la cola." << endl;
-        }
-    }
-    else
-    {
-        cout << "No hay clientes en la cola." << endl;
-    }
+            cout << notificaciones << endl;
+        } else { cout << "Cliente no encontrado en la cola." << endl; }
+    } else { cout << "No hay clientes en la cola." << endl; }
 }
 
-void mostrarClienteParaAtender(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Client> &objetocliente)
-{
-    if (!queueclientes->IsEmpty())
-    {
+void mostrarClienteParaAtender(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Client> &objetocliente) {
+    if (!queueclientes->IsEmpty()) {
         objetocliente = queueclientes->ObtenerClienteDeCola();
         queueclientes->mostrarClientesActual(objetocliente);
-    }
-    else
-    {
-        cout << "No hay clientes en la cola." << endl;
-    }
+    } else { cout << "No hay clientes en la cola." << endl; }
 }
 
-void mostrarClientesPendientes(shared_ptr<ColaCliente> &queueclientes)
-{
-    if (!queueclientes->IsEmpty())
-    {
+void mostrarClientesPendientes(shared_ptr<ColaCliente> &queueclientes) {
+    if (!queueclientes->IsEmpty()) {
         queueclientes->mostrarClientesPendientes();
-    }
-    else
-    {
-        cout << "No hay clientes en la cola." << endl;
-    }
+    } else { cout << "No hay clientes en la cola." << endl; }
 }
 
-void mostrarClientesAtendidos(shared_ptr<ColaCliente> &queueclientes)
-{
+void mostrarClientesAtendidos(shared_ptr<ColaCliente> &queueclientes) {
     queueclientes->MostrarClienteAtendidos();
-
 }
 
-void atenderTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets> &listadetickets, shared_ptr<SupportTechnical> &tecnico, shared_ptr<IMessage> &objetomensaje)
-{
-    if (!queueclientes->IsEmpty())
-    {
+void atenderTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets> &listadetickets, shared_ptr<SupportTechnical> &tecnico, shared_ptr<IMessage> &objetomensaje) {
+    if (!queueclientes->IsEmpty()) {
         shared_ptr<Client> objetocliente = queueclientes->ObtenerClienteDeCola();
         vector<shared_ptr<Ticket>> ticketsCliente = listadetickets->ObtenerTickets(objetocliente);
 
         shared_ptr<Ticket> ticket = nullptr;
-        for (auto &t : ticketsCliente)
-        {
-            if (t->getEstado() == "abierto")
-            {
+        for (auto &t : ticketsCliente) {
+            if (t->getEstado() == "abierto") {
                 ticket = t;
                 break;
             }
         }
 
-        if (ticket)
-        {
+        if (ticket) {
             cout << "Atendiendo al cliente: " << objetocliente->getname() << endl;
             cout << "Ticket " << ticket->getid() << " - Asunto: " << ticket->getincidente()->getasunto() << endl;
 
@@ -173,113 +126,93 @@ void atenderTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTicke
             objetomensaje = tecnico->EnviarMensaje(tecnico, mensajeTecnico);
             ticket->agregarMensaje(objetomensaje);
             ticket->AlertClient();
-        }
-        else
-        {
-            cout << "No hay tickets abiertos para el cliente " << objetocliente->getname() << endl;
-        }
-    }
-    else
-    {
-        cout << "No hay clientes en la cola." << endl;
-    }
+        } else { cout << "No hay tickets abiertos para el cliente " << objetocliente->getname() << endl; }
+    } else { cout << "No hay clientes en la cola." << endl; }
 }
 
-void mostrarTicketsCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets> &listadetickets)
-{
-    if (!queueclientes->IsEmpty())
-    {
+void mostrarTicketsCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets> &listadetickets) {
+    if (!queueclientes->IsEmpty()) {
         shared_ptr<Client> primerCliente = queueclientes->ObtenerClienteDeCola();
         vector<shared_ptr<Ticket>> ticketsCliente = listadetickets->ObtenerTickets(primerCliente);
 
-        if (!ticketsCliente.empty())
-        {
+        if (!ticketsCliente.empty()) {
             cout << "Tickets del cliente: " << primerCliente->getname() << endl;
-            for (const auto &ticket : ticketsCliente)
-            {
+            for (const auto &ticket : ticketsCliente) {
                 ticket->mostrarTicket();
             }
-        }
-        else
-        {
-            cout << "El cliente no tiene tickets." << endl;
-        }
-    }
-    else
-    {
-        cout << "No hay clientes en la cola." << endl;
-    }
+        } else { cout << "El cliente no tiene tickets." << endl; }
+    } else { cout << "No hay clientes en la cola." << endl; }
 }
 
-void darBajaCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets> &listadetickets)
-{
-    if (!queueclientes->IsEmpty())
-    {
+void darBajaCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets> &listadetickets) {
+    if (!queueclientes->IsEmpty()) {
         shared_ptr<Client> objetocliente = queueclientes->ObtenerClienteDeCola();
-        if (listadetickets->TodosTicketsCerrados(objetocliente))
-        {
+        if (listadetickets->TodosTicketsCerrados(objetocliente)) {
             cout << "Todos los tickets del cliente " << objetocliente->getname() << " han sido atendidos." << endl;
             queueclientes->EliminarClienteDeCola();
-        }
-        else
-        {
+        } else {
             cout << "Aun hay tickets abiertos para este cliente." << endl;
         }
-    }
-    else
-    {
+    } else {
         cout << "No hay clientes en la cola." << endl;
     }
 }
 
-void enviarMensajeCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Client> &objetocliente,vector<shared_ptr<Ticket>> &ticketsCliente,shared_ptr<ListaTickets>& listadetickets, string notificaciones){
-           // Enviar mensaje desde el cliente
-        if (!queueclientes->IsEmpty()) { // Verificamos si la cola no está vacía
-            // Obtener el primer cliente de la cola
-            objetocliente = queueclientes->ObtenerClienteDeCola();  // Usamos 'primerCliente' o 'front' para obtener el primero sin eliminarlo
-            
-            cout << "Cliente actual: " << objetocliente->getname() << endl;
-            
-            ticketsCliente = listadetickets->ObtenerTickets(objetocliente);
-            for(const auto ticket:ticketsCliente){
+void enviarMensajeCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Client> &objetocliente,
+                          vector<shared_ptr<Ticket>> &ticketsCliente, shared_ptr<ListaTickets> &listadetickets) {
+    if (!queueclientes->IsEmpty()) {
+        objetocliente = queueclientes->ObtenerClienteDeCola();
 
-                if (ticket && ticket->getEstado() == "abierto") {
-                    string mensajeCliente;
-                    cout << "Ingrese mensaje del cliente del ticket " <<ticket->getincidente()->getasunto()<< " : " << endl; 
-                    getline(cin, mensajeCliente);
+        if (!objetocliente) {
+            cerr << "Error: Cliente obtenido de la cola es nulo." << endl;
+            return;
+        }
 
-                    auto objetomensaje = objetocliente->EnviarMensaje(objetocliente, mensajeCliente, notificaciones);
-                    ticket->agregarMensaje(objetomensaje);
-                    ticket->AlertTechnical();
-                    break;
-                    } 
-                else {
-                    cout << "No hay tickets abiertos para este cliente." << endl;
+        cout << "Cliente actual: " << objetocliente->getname() << endl;
+
+        ticketsCliente = listadetickets->ObtenerTickets(objetocliente);
+        for (const auto &ticket : ticketsCliente) {
+            if (ticket && ticket->getEstado() == "abierto") {
+                string mensajeCliente;
+                cout << "Ingrese mensaje del cliente del ticket " << ticket->getincidente()->getasunto() << " : " << endl;
+                getline(cin, mensajeCliente);
+                auto objetomensaje = objetocliente->EnviarMensaje(objetocliente, mensajeCliente, ticket->getnotificaciones());
+                if (!objetomensaje) {
+                    cerr << "Error: El mensaje no fue creado correctamente." << endl;
+                    return;
+                }
+                if (!objetomensaje->getClient()) {
+                    cerr << "Error: El mensaje no tiene asignado el cliente." << endl;
+                    return;
                 }
 
-
+                ticket->agregarMensaje(objetomensaje);
+                ticket->AlertTechnical();
+                break;
+            } else {
+                cout << "No hay tickets abiertos para este cliente." << endl;
             }
-        } else {
-            cout << "No hay clientes en la cola." << endl;
         }
+    } else {
+        cout << "No hay clientes en la cola." << endl;
+    }
 }
 
-void mostrarMensajesTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Client> &objetocliente, shared_ptr<ListaTickets> &listadetickets){
-        if (!queueclientes->IsEmpty()) { // Verificamos si la cola no está vacía
-            // Obtener el primer cliente de la cola
-            objetocliente = queueclientes->ObtenerClienteDeCola();  // Usamos 'primerCliente' o 'front' para obtener el primero sin eliminarlo
-            
-            cout << "Cliente actual: " << objetocliente->getname() << endl;
-            
-            listadetickets->MensajesClienteActual(objetocliente);
-            
-        } else {
-            cout << "No hay clientes en la cola." << endl;
-        }
+void mostrarMensajesTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Client> &objetocliente, shared_ptr<ListaTickets> &listadetickets) {
+    if (!queueclientes->IsEmpty()) { // Verificamos si la cola no está vacía
+        // Obtener el primer cliente de la cola
+        objetocliente = queueclientes->ObtenerClienteDeCola(); // Usamos 'primerCliente' o 'front' para obtener el primero sin eliminarlo
+
+        cout << "Cliente actual: " << objetocliente->getname() << endl;
+
+        listadetickets->MensajesClienteActual(objetocliente);
+    } else {
+        cout << "No hay clientes en la cola." << endl;
+    }
 }
 
 // Cambiar el estado de un ticket específico del primer cliente de la cola
-void cambiarestadoTicket(shared_ptr<ColaCliente> &queueclientes, vector<shared_ptr<Ticket>> &ticketsCliente, shared_ptr<ListaTickets> &listadetickets, shared_ptr<Client> &objetocliente){
+void cambiarestadoTicket(shared_ptr<ColaCliente> &queueclientes, vector<shared_ptr<Ticket>> &ticketsCliente, shared_ptr<ListaTickets> &listadetickets, shared_ptr<Client> &objetocliente) {
     if (!queueclientes->IsEmpty()) {
         // Obtener el primer cliente de la cola sin eliminarlo
         shared_ptr<Client> primerCliente = queueclientes->ObtenerClienteDeCola();
@@ -289,27 +222,27 @@ void cambiarestadoTicket(shared_ptr<ColaCliente> &queueclientes, vector<shared_p
 
         if (!ticketsCliente.empty()) {
             cout << "Tickets del cliente: " << primerCliente->getname() << endl;
-            
+
             // Mostrar los tickets disponibles
-            for (const auto& ticket : ticketsCliente) {
-                cout << "Ticket " << ticket->getid() << " - Asunto: " << ticket->getincidente()->getasunto() 
+            for (const auto &ticket : ticketsCliente) {
+                cout << "Ticket " << ticket->getid() << " - Asunto: " << ticket->getincidente()->getasunto()
                      << " - Estado: " << ticket->getEstado() << endl;
             }
 
             // Solicitar el ID del ticket que se desea modificar
             int idTicket;
-            cout << "Ingrese el ID del ticket que desea modificar: "; 
+            cout << "Ingrese el ID del ticket que desea modificar: ";
             cin >> idTicket;
 
             // Buscar el ticket con el ID ingresado
             bool ticketEncontrado = false;
-            for (auto& ticket : ticketsCliente) {
+            for (auto &ticket : ticketsCliente) {
                 if (ticket->getid() == idTicket) {
                     ticketEncontrado = true;
-                    
+
                     // Solicitar el nuevo estado del ticket
                     string nuevoEstado;
-                    cout << "Ingrese el nuevo estado del ticket ("<< ticket->getincidente()->getasunto()  << ") , (abierto/cerrado): ";
+                    cout << "Ingrese el nuevo estado del ticket (" << ticket->getincidente()->getasunto() << ") , (abierto/cerrado): ";
                     cin >> nuevoEstado;
 
                     // Validar el estado ingresado
@@ -334,8 +267,7 @@ void cambiarestadoTicket(shared_ptr<ColaCliente> &queueclientes, vector<shared_p
     }
 }
 
-int minDistance(int acumuladorDistancia[], bool acumuladorNodosVisitados[])
-{
+int minDistance(int acumuladorDistancia[], bool acumuladorNodosVisitados[]) {
     /**
      * Declaramos variable distancia para saber cual va a ser el de menor distancia
      * Y declaramos que nodo es el de menor distancia
@@ -344,22 +276,20 @@ int minDistance(int acumuladorDistancia[], bool acumuladorNodosVisitados[])
 
     /**
      * Valida si el nodo fue visitado y ademas si su distancia es menor a INFINITO (esto lo es un numero muy grande)
-     * 
+     *
      * Explicación:
      * Empezamos por el nodo 0 entonces:
      * Sabemos que el nodo 0 todavía no fue visitado, así que se valida una condición
      * Al empezar por el nodo 0, como vimos antes, se estableció que la distancia en el nodo 0 es 0,
      * entonces esto genera que se cumpla la segunda condición porque 0 es menor a INFINITO
-     * 
+     *
      * Ya las siguientes iteraciones no se cumplen porque se seteo que la distancia menor es 0, entonces no hay otro
      * nodo con distancia menor a 0 porque las distancias estan inicializadas en INFINITO ademas de que los otros
      * todavía no fueron visitados
-     *  
+     *
      */
-    for (int nodo = 0; nodo < MAX_NODES; nodo++)
-    {
-        if (acumuladorNodosVisitados[nodo] == false && acumuladorDistancia[nodo] <= distancia)
-        {
+    for (int nodo = 0; nodo < MAX_NODES; nodo++) {
+        if (acumuladorNodosVisitados[nodo] == false && acumuladorDistancia[nodo] <= distancia) {
             distancia = acumuladorDistancia[nodo];
             nodo_menor_distancia = nodo;
         }
@@ -368,29 +298,25 @@ int minDistance(int acumuladorDistancia[], bool acumuladorNodosVisitados[])
     return nodo_menor_distancia;
 }
 
-void printSolution(int acumuladorDistancia[])
-{
+void printSolution(int acumuladorDistancia[]) {
     cout << "Vertex \t Distance from Source" << endl;
-    for (int i = 0; i < MAX_NODES; i++)
-    {
+    for (int i = 0; i < MAX_NODES; i++) {
         cout << i << " \t\t\t\t" << acumuladorDistancia[i] << endl;
     }
 }
 
-void dijkstra(int graph[MAX_NODES][MAX_NODES], int src)
-{
+void dijkstra(int graph[MAX_NODES][MAX_NODES], int src) {
     /*
         Declaración de los acumuladores de distancia
         Y de los nodos que fueron visitados
-    */   
+    */
     int acumuladorDistancia[MAX_NODES];
     bool acumuladorNodosVisitados[MAX_NODES];
 
     /**
      * Inicialización de acumuladores en valores predeterminados
      */
-    for (int i = 0; i < MAX_NODES; i++)
-    {
+    for (int i = 0; i < MAX_NODES; i++) {
         acumuladorDistancia[i] = INT_MAX;
         acumuladorNodosVisitados[i] = false;
     }
@@ -404,8 +330,7 @@ void dijkstra(int graph[MAX_NODES][MAX_NODES], int src)
     /**
      * Contenedor de toda la lógica de Dijkstra
      */
-    for (int count = 0; count < MAX_NODES - 1; count++)
-    {
+    for (int count = 0; count < MAX_NODES - 1; count++) {
         /**
          * Función que calcula que nodo es el mas cercano, primero siempre va a empezar por el nodo en el que
          * se inició
@@ -419,28 +344,26 @@ void dijkstra(int graph[MAX_NODES][MAX_NODES], int src)
 
         /**
          * Lógica para saber cual es el camino mas corto que puede ir el nodo src hasta el siguiente nodo
-         * 
+         *
          * Explicación:
          * Sabemos entonces que el primer nodo que se quiere saber es el 0, o sea, de nodo 0 ir a nodo 0
-         * 
-         * Podemos ver que la primer condición no se cumple, esto porque el nodo 0 fue visitado, entonces pasa a la 
+         *
+         * Podemos ver que la primer condición no se cumple, esto porque el nodo 0 fue visitado, entonces pasa a la
          * siguiente iteración, el nodo 1 sabemos que no fue visitado se cumple primera condición, la segunda tambien se cumple
          * esto porque hay una conexión entre el nodo 0 y el nodo 1 (ver grafo inicializado), la tercera condición se cumple
          * porque sabemos que la distancia del nodo 0 es 0, entonces es diferente a INFINITO, la 4ta condición se cumple porque
          * valida si la suma de la distancia del nodo 0 (que es 0) mas la distancia del nodo 0 al nodo 1 (que es 2), es menor
          * a la distancia acumulada del nodo 1 (que es INFINITO porque no se estableció todavía), entonces lo que hace
          * es inicializar la distancia del nodo 1 como la suma de la distancia del nodo 0 (que es 0) y la distancia del nodo 0 al nodo 1 (que es 2)
-         * 
+         *
          * Y así verifica todo lo demas nodos. Cabe aclarar que el acumulador de distancias es a partir del nodo en el que se inicialize
-         * 
+         *
          */
-        for (int nodo = 0; nodo < MAX_NODES; nodo++)
-        {
-            if (
-                !acumuladorNodosVisitados[nodo] &&
+        for (int nodo = 0; nodo < MAX_NODES; nodo++) {
+            if (!acumuladorNodosVisitados[nodo] &&
                 graph[nodoCercano][nodo] &&
                 acumuladorDistancia[nodoCercano] != INT_MAX &&
-                acumuladorDistancia[nodoCercano] + graph[nodoCercano][nodo] < acumuladorDistancia[nodo])
+                acumuladorDistancia[nodoCercano] + graph[nodoCercano][nodo] < acumuladorDistancia[nodo] ) 
             {
                 acumuladorDistancia[nodo] = acumuladorDistancia[nodoCercano] + graph[nodoCercano][nodo];
             }
@@ -453,8 +376,7 @@ void dijkstra(int graph[MAX_NODES][MAX_NODES], int src)
     printSolution(acumuladorDistancia);
 }
 
-void aloritmoDijkstra()
-{
+void aloritmoDijkstra() {
     // Inicialización y declaración de grafo
     int graph[MAX_NODES][MAX_NODES] = {
         // Nodo 0 y sus conexiones
@@ -477,34 +399,19 @@ void aloritmoDijkstra()
      * Segundo parámetro el nodo en el que se inicia
      */
     dijkstra(graph, 0);
-
 }
-
-
-
-
-
-
-
-
-
 
 int main() {
     shared_ptr<ColaCliente> queueclientes = make_shared<ColaCliente>();
     shared_ptr<ListaTickets> listadetickets = make_shared<ListaTickets>();
     shared_ptr<IMessage> objetomensaje;
 
-
     shared_ptr<Client> objetocliente;
     shared_ptr<SupportTechnical> tecnico;
     shared_ptr<Ticket> ticket;
 
-
-
     int opcion;
-
     vector<shared_ptr<Ticket>> ticketsCliente;
-
 
     do {
         cout << ".                                       SISTEMA DE TICKETS              ." << endl;
@@ -523,67 +430,56 @@ int main() {
         cout << "13- Algoritmo Dijsktra." << endl;
 
         cout << "0- Salir." << endl;
-        cout << "Opcion: "; cin >> opcion;
-        cin.ignore();  // Para evitar que se salte la entrada de getline
+        cout << "Opcion: ";
+        cin >> opcion;
+        cin.ignore(); // Para evitar que se salte la entrada de getline
 
         switch (opcion) {
-        case 1:
-            ingresarCliente(queueclientes, objetocliente);
-            break;
-
-
-        case 2:
-            ingresarTecnico(tecnico);
-
-            
-            break;
-        case 3:
-            crearTicket(queueclientes, listadetickets, tecnico);
-            break;
-
-        case 4:
-            mostrarClienteParaAtender(queueclientes, objetocliente);
-            break;
-        case 5:
-            mostrarClientesPendientes(queueclientes);
-            break;
-        case 6:
-            mostrarClientesAtendidos(queueclientes);
-            break;
-        case 7:
-            atenderTicket(queueclientes, listadetickets, tecnico, objetomensaje);
-            break;
-        case 8:
-            mostrarTicketsCliente(queueclientes, listadetickets);
-            break;
-        case 9:
-            darBajaCliente(queueclientes, listadetickets);
-            break;
-        case 10:
-        enviarMensajeCliente(queueclientes, objetocliente,ticketsCliente,listadetickets, notificaciones);
-            break;
-
-        case 11:
-        mostrarMensajesTicket(queueclientes, objetocliente, listadetickets);
-
-            break;
-
-        case 12: 
-        cambiarestadoTicket(queueclientes,ticketsCliente, listadetickets, objetocliente);
-    
-    break;
-
-        case 13: 
-            aloritmoDijkstra();
-    break;
-        
-        case 0:
-            cout << "Saliendo del programa." << endl;
-            break;
-
-        default:
-            cout << "Opcion invalida." << endl;
-            break;
+            case 1:
+                ingresarCliente(queueclientes, objetocliente);
+                break;
+            case 2:
+                ingresarTecnico(tecnico);
+                break;
+            case 3:
+                crearTicket(queueclientes, listadetickets, tecnico);
+                break;
+            case 4:
+                mostrarClienteParaAtender(queueclientes, objetocliente);
+                break;
+            case 5:
+                mostrarClientesPendientes(queueclientes);
+                break;
+            case 6:
+                mostrarClientesAtendidos(queueclientes);
+                break;
+            case 7:
+                atenderTicket(queueclientes, listadetickets, tecnico, objetomensaje);
+                break;
+            case 8:
+                mostrarTicketsCliente(queueclientes, listadetickets);
+                break;
+            case 9:
+                darBajaCliente(queueclientes, listadetickets);
+                break;
+            case 10:
+                enviarMensajeCliente(queueclientes, objetocliente, ticketsCliente, listadetickets);
+                break;
+            case 11:
+                mostrarMensajesTicket(queueclientes, objetocliente, listadetickets);
+                break;
+            case 12:
+                cambiarestadoTicket(queueclientes, ticketsCliente, listadetickets, objetocliente);
+                break;
+            case 13:
+                aloritmoDijkstra();
+                break;
+            case 0:
+                cout << "Saliendo del programa." << endl;
+                break;
+            default:
+                cout << "Opcion invalida." << endl;
+                break;
         }
     } while (opcion != 0);
 
