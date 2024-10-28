@@ -122,8 +122,8 @@ void atenderTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTicke
             cout << "Ingrese mensaje del tecnico " << tecnico->getname() << ": ";
             getline(cin, mensajeTecnico);
 
-            tecnico->Atender(tecnico, ticketsCliente);
-            objetomensaje = tecnico->EnviarMensaje(tecnico, mensajeTecnico);
+            tecnico->Atender(tecnico, ticket);
+            objetomensaje = tecnico->EnviarMensaje(tecnico, mensajeTecnico, ticket->getnotificaciones());
             ticket->agregarMensaje(objetomensaje);
             ticket->AlertClient();
         } else { cout << "No hay tickets abiertos para el cliente " << objetocliente->getname() << endl; }
@@ -151,7 +151,7 @@ void darBajaCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTick
             cout << "Todos los tickets del cliente " << objetocliente->getname() << " han sido atendidos." << endl;
             queueclientes->EliminarClienteDeCola();
         } else {
-            cout << "Aun hay tickets abiertos para este cliente." << endl;
+            cout << "Aun no se ah podido eliminar el cliente." << endl;
         }
     } else {
         cout << "No hay clientes en la cola." << endl;
@@ -163,36 +163,34 @@ void enviarMensajeCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Cli
     if (!queueclientes->IsEmpty()) {
         objetocliente = queueclientes->ObtenerClienteDeCola();
 
-        if (!objetocliente) {
-            cerr << "Error: Cliente obtenido de la cola es nulo." << endl;
-            return;
-        }
-
         cout << "Cliente actual: " << objetocliente->getname() << endl;
-
+        
         ticketsCliente = listadetickets->ObtenerTickets(objetocliente);
-        for (const auto &ticket : ticketsCliente) {
-            if (ticket && ticket->getEstado() == "abierto") {
-                string mensajeCliente;
-                cout << "Ingrese mensaje del cliente del ticket " << ticket->getincidente()->getasunto() << " : " << endl;
-                getline(cin, mensajeCliente);
-                auto objetomensaje = objetocliente->EnviarMensaje(objetocliente, mensajeCliente, ticket->getnotificaciones());
-                if (!objetomensaje) {
+        shared_ptr<Ticket> ticket = nullptr;
+        for (auto &t : ticketsCliente) {
+            if (t->getEstado() == "abierto") {
+                ticket = t;
+                break;
+                }
+            }
+
+        if (ticket) {
+            string mensajeCliente;
+            cout << "Ingrese mensaje del cliente del ticket " << ticket->getincidente()->getasunto() << " : " << endl;
+            getline(cin, mensajeCliente);
+            auto objetomensaje = objetocliente->EnviarMensaje(objetocliente, mensajeCliente, ticket->getnotificaciones());
+            if (!objetomensaje) {
                     cerr << "Error: El mensaje no fue creado correctamente." << endl;
                     return;
                 }
-                if (!objetomensaje->getClient()) {
-                    cerr << "Error: El mensaje no tiene asignado el cliente." << endl;
-                    return;
-                }
 
-                ticket->agregarMensaje(objetomensaje);
-                ticket->AlertTechnical();
-                break;
-            } else {
-                cout << "No hay tickets abiertos para este cliente." << endl;
-            }
-        }
+            ticket->agregarMensaje(objetomensaje);
+            ticket->AlertTechnical();
+ 
+        } else { cout << "No hay tickets abiertos para el cliente " << objetocliente->getname() << endl; }
+            
+
+        
     } else {
         cout << "No hay clientes en la cola." << endl;
     }
@@ -250,17 +248,17 @@ void cambiarestadoTicket(shared_ptr<ColaCliente> &queueclientes, vector<shared_p
                         ticket->setEstado(nuevoEstado);
                         cout << "Estado del Ticket " << ticket->getid() << " actualizado a " << nuevoEstado << "." << endl;
                     } else {
-                        cout << "Estado no válido. Debe ser 'abierto', 'en proceso' o 'cerrado'." << endl;
+                        cout << "Estado no valido. Debe ser 'abierto' o 'cerrado'." << endl;
                     }
                     break;
                 }
             }
 
             if (!ticketEncontrado) {
-                cout << "No se encontró el ticket con el ID ingresado." << endl;
+                cout << "No se encontro el ticket con el ID ingresado." << endl;
             }
         } else {
-            cout << "El cliente no tiene tickets." << objetocliente->getname() << endl;
+            cout << "El cliente no tiene tickets." << endl;
         }
     } else {
         cout << "No hay clientes en la cola." << endl;

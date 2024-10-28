@@ -21,9 +21,6 @@ void Client::clienteinfo() {
     cout << "DNI: " << getdni() << endl;
 }
 
-//ACA HAY ACOPLAMIENTO FUERTE PORQUE EL ALTO NIVEL(CLIENTE) DEPENDE DE LAS IMPLEMENTACIONES(WHATSAPP)
-//DEBERIA SER UN POCO MAS GENERICO ESTE METODO PORQUE SI EL ALGUN MOMENTO SE DESEA ENVIAR POR INSTAGRAM, HAY Q MODIFICAR LO EXISTENTE
-
 shared_ptr<IMessage> Client::EnviarMensaje(shared_ptr<Client> cliente, const string& mensajeTexto, string notificaciones) {
         // Crear un nuevo mensaje
         if (mensajeTexto.empty()) {
@@ -31,7 +28,7 @@ shared_ptr<IMessage> Client::EnviarMensaje(shared_ptr<Client> cliente, const str
         return nullptr; // O maneja de otra manera si es necesario
     }
 
-    cout << "Enviando mensaje: " << mensajeTexto << " a " << cliente->getname() << " por " << notificaciones << endl;
+    cout << "Enviando mensaje (" << mensajeTexto << ") de parte de: " << cliente->getname() << " por " << notificaciones << endl;
 
     if(notificaciones == "Whatsapp"){
 
@@ -48,7 +45,7 @@ shared_ptr<IMessage> Client::EnviarMensaje(shared_ptr<Client> cliente, const str
         return objeto;
 
     }
-     cout << "Notificación desconocida: " << notificaciones << endl;
+     cout << "Notificacion desconocida: " << notificaciones << endl;
      return nullptr; // Retorna nullptr si la notificación no es válida
     
 }

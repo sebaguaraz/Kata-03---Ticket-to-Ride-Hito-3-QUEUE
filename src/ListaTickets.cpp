@@ -48,6 +48,7 @@ bool ListaTickets::TodosTicketsCerrados(shared_ptr<Client> cliente){
     vector<shared_ptr<Ticket>> ticketsCliente = ObtenerTickets(cliente);
 
 
+    if (!ticketsCliente.empty()) {
         // Verificar si todos los tickets están cerrados
         for (const auto ticket : ticketsCliente) {
             if (!(ticket->getEstado()=="cerrado")) {
@@ -55,4 +56,9 @@ bool ListaTickets::TodosTicketsCerrados(shared_ptr<Client> cliente){
             }
         }
         return true; // Si todos están cerrados, devolver true
+
+    }else {
+        cout << "El cliente no tiene tickets aun." << endl;
+        return false;
+    }
 }
