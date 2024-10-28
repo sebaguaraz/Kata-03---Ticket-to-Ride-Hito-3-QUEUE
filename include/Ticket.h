@@ -23,6 +23,7 @@ private:
     int id;
     static int contador;
     string estado;
+    string notificaciones;
     shared_ptr<Client> cliente;
     shared_ptr<SupportTechnical> tecnico;
     shared_ptr<Incidente> incidente;
@@ -35,7 +36,9 @@ public:
     void AddTecnico(shared_ptr<SupportTechnical> objetotecnico);
     void mostrarTicket();
     void setEstado(string estado);
+    void setnotificaciones(string notificaciones);
     string getEstado();
+    string getnotificaciones();
     shared_ptr<Client> getcliente();
     shared_ptr<Incidente> getincidente();
     shared_ptr<SupportTechnical> gettecnico();

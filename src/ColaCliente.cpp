@@ -50,6 +50,18 @@ void ColaCliente::marcarClientesAtendidos(shared_ptr<Client> cliente){//metodos 
     clientesAtendidos.push_back(cliente);
 };
 
+void ColaCliente::EliminarClienteDeCola(){
+    
+        shared_ptr<Client> cliente = ColaClientes.front();
+        ColaClientes.pop();
+        marcarClientesAtendidos(cliente);//se deberia marcar el cliente si el tecnico ya lo atendio
+
+        
+    
+
+
+}
+
 void ColaCliente::MostrarClienteAtendidos(){
 
     if (clientesAtendidos.empty())

@@ -11,6 +11,7 @@ void SupportTechnical::setname(string name) { this->name = name; }
 
 string SupportTechnical::gettelefono() { return telefono; }
 string SupportTechnical::getname() { return name; }
+string SupportTechnical::getnotificaciones() { return notificaciones; }
 
 void SupportTechnical::tecnicoinfo() {
     cout << "**** DATOS TECNICO: " << endl;
@@ -22,8 +23,7 @@ void SupportTechnical::tecnicoinfo() {
 shared_ptr<Ticket> SupportTechnical::CrearTicket(shared_ptr<Client> objetocliente, string asunto, string notificaciones){
     this->notificaciones=notificaciones;
     shared_ptr<Ticket> ticket= make_shared<Ticket>(objetocliente, asunto);
-
-
+    ticket->setnotificaciones(notificaciones);
 
     return ticket;
     
@@ -42,8 +42,7 @@ void SupportTechnical::Atender(shared_ptr<SupportTechnical> objetotecnico, vecto
 
 }
 
-//ACA HAY ACOPLAMIENTO FUERTE PORQUE EL ALTO NIVEL(TECNICO) DEPENDE DE LAS IMPLEMENTACIONES(WHATSAPP)
-//DEBERIA SER UN POCO MAS GENERICO ESTE METODO PORQUE SI EL ALGUN MOMENTO SE DESEA ENVIAR POR INSTAGRAM, HAY Q MODIFICAR LO EXISTENTE
+
 shared_ptr<IMessage> SupportTechnical::EnviarMensaje(shared_ptr<SupportTechnical> tecnico, string mensaje) {
     // Verificar que el mensaje no esté vacío
     if (mensaje.empty()) {

@@ -31,6 +31,8 @@ shared_ptr<IMessage> Client::EnviarMensaje(shared_ptr<Client> cliente, const str
         return nullptr; // O maneja de otra manera si es necesario
     }
 
+    cout << "Enviando mensaje: " << mensajeTexto << " a " << cliente->getname() << " por " << notificaciones << endl;
+
     if(notificaciones == "Whatsapp"){
 
         shared_ptr<IMessage> objeto = make_shared<Whatsapp>();

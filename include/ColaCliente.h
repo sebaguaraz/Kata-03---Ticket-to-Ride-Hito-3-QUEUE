@@ -18,6 +18,7 @@ public:
     ~ColaCliente();
     void agregarCliente(shared_ptr<Client> cliente);
     shared_ptr<Client> ObtenerClienteDeCola();
+    void EliminarClienteDeCola();
     void MostrarClienteAtendidos(); // Método para mostrar clientes atendidos a partir de los que marca
     void marcarClientesAtendidos(shared_ptr<Client> cliente);//marcar clientes ya atendidos
     void mostrarClientesPendientes();//mostrar clientes pendientes
