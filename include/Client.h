@@ -12,7 +12,8 @@
 using namespace std;
 
 class IMessage;
-class Client : public enable_shared_from_this<Client> {
+class Client : public enable_shared_from_this<Client>
+{
 private:
     int id;
     static int idCounter;
@@ -28,7 +29,7 @@ public:
     string getname();
     int getdni();
     void clienteinfo();
-    shared_ptr<IMessage> EnviarMensaje(shared_ptr<Client> cliente, const string& mensajeTexto, string notificaciones);
+    shared_ptr<IMessage> EnviarMensaje(shared_ptr<Client> cliente, const string &mensajeTexto, string notificaciones);
     void Alert();
 };
 

@@ -1,16 +1,17 @@
 #include <Incidente.h>
 
-
 Incidente::Incidente(string asunto, shared_ptr<Client> cliente)
     : asunto(asunto), cliente(cliente) {}
 
-Incidente::~Incidente(){}
+Incidente::~Incidente() {}
 
-string Incidente::getasunto(){
+string Incidente::getasunto()
+{
     return asunto;
 };
 
-void Incidente::Incidenteinfo() {
+void Incidente::Incidenteinfo()
+{
     cout << "------------- DATOS DEL TICKET---------------------" << endl;
     cout << "Asunto del ticket: " << asunto << endl;
     cout << "Ticket asociado al cliente: " << cliente->getname() << endl;

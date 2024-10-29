@@ -18,7 +18,8 @@ class Incidente;
 class SupportTechnical;
 class IMessage;
 
-class Ticket {
+class Ticket
+{
 private:
     int id;
     static int contador;
@@ -32,7 +33,7 @@ private:
 public:
     Ticket(shared_ptr<Client> objetocliente, string asunto);
     ~Ticket();
-    //void AddClient(shared_ptr<Client> objetocliente);
+    // void AddClient(shared_ptr<Client> objetocliente);
     void AddTecnico(shared_ptr<SupportTechnical> objetotecnico);
     void mostrarTicket();
     void setEstado(string estado);
@@ -42,7 +43,6 @@ public:
     shared_ptr<Client> getcliente();
     shared_ptr<Incidente> getincidente();
     shared_ptr<SupportTechnical> gettecnico();
-
 
     int getid();
     void agregarMensaje(shared_ptr<IMessage> objetomensaje);

@@ -7,15 +7,15 @@
 
 using namespace std;
 
-class Client;  // Declaración anticipada
-class SupportTechnical;  // Declaración anticipada
+class Client;           // Declaración anticipada
+class SupportTechnical; // Declaración anticipada
 
-class Whatsapp : public IMessage {
+class Whatsapp : public IMessage
+{
 private:
     shared_ptr<Client> cliente;
     shared_ptr<SupportTechnical> tecnico;
-    string mensaje1,mensaje2;
-
+    string mensaje1, mensaje2;
 
 public:
     Whatsapp();
@@ -29,8 +29,6 @@ public:
     string getMessageTecnico();
     string getMessageCliente();
     string notificar();
-
-
 };
 
 #endif

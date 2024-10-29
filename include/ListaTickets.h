@@ -9,7 +9,8 @@
 class Ticket;
 class Client;
 
-class ListaTickets {
+class ListaTickets
+{
 private:
     vector<shared_ptr<Ticket>> listaticket;
 

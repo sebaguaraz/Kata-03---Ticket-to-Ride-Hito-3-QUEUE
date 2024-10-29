@@ -1,76 +1,77 @@
 #include <ColaCliente.h>
 
-
 ColaCliente::ColaCliente() {}
 ColaCliente::~ColaCliente() {}
 
-void ColaCliente::agregarCliente(shared_ptr<Client> cliente) {
+void ColaCliente::agregarCliente(shared_ptr<Client> cliente)
+{
     ColaClientes.push(cliente);
 }
 
-shared_ptr<Client> ColaCliente::ObtenerClienteDeCola() {//obtiene el cliente de la cola
-    if (!ColaClientes.empty()) {
+shared_ptr<Client> ColaCliente::ObtenerClienteDeCola()
+{ // obtiene el cliente de la cola
+    if (!ColaClientes.empty())
+    {
         shared_ptr<Client> cliente = ColaClientes.front();
-        //ColaClientes.pop();
-        //marcarClientesAtendidos(cliente);//se deberia marcar el cliente si el tecnico ya lo atendio
+        // ColaClientes.pop();
+        // marcarClientesAtendidos(cliente);//se deberia marcar el cliente si el tecnico ya lo atendio
 
         return cliente;
-    } else {
+    }
+    else
+    {
         return nullptr;
     }
 }
 
-bool ColaCliente::IsEmpty() {
+bool ColaCliente::IsEmpty()
+{
     return ColaClientes.empty();
 }
 
-
-
-void ColaCliente::mostrarClientesPendientes() {
+void ColaCliente::mostrarClientesPendientes()
+{
     std::queue<std::shared_ptr<Client>> copiaCola = ColaClientes; // Hacer una copia de la cola original
 
-    if (copiaCola.empty()) {
+    if (copiaCola.empty())
+    {
         std::cout << "No hay clientes pendientes." << std::endl;
         return;
     }
 
     std::cout << "Clientes pendientes:" << std::endl;
-    while (!copiaCola.empty()) {
+    while (!copiaCola.empty())
+    {
         std::shared_ptr<Client> cliente = copiaCola.front(); // Obtener el cliente en la parte delantera
 
-            cliente->clienteinfo();
-            copiaCola.pop(); // Eliminar de la copia
+        cliente->clienteinfo();
+        copiaCola.pop(); // Eliminar de la copia
     }
 }
 
-
-
-
-void ColaCliente::marcarClientesAtendidos(shared_ptr<Client> cliente){//metodos para marcar clientes ya atendidos
+void ColaCliente::marcarClientesAtendidos(shared_ptr<Client> cliente)
+{ // metodos para marcar clientes ya atendidos
     clientesAtendidos.push_back(cliente);
 };
 
-void ColaCliente::EliminarClienteDeCola(){
-    
-        shared_ptr<Client> cliente = ColaClientes.front();
-        ColaClientes.pop();
-        marcarClientesAtendidos(cliente);//se deberia marcar el cliente si el tecnico ya lo atendio
+void ColaCliente::EliminarClienteDeCola()
+{
 
-        
-    
-
-
+    shared_ptr<Client> cliente = ColaClientes.front();
+    ColaClientes.pop();
+    marcarClientesAtendidos(cliente); // se deberia marcar el cliente si el tecnico ya lo atendio
 }
 
-void ColaCliente::MostrarClienteAtendidos(){
+void ColaCliente::MostrarClienteAtendidos()
+{
 
     if (clientesAtendidos.empty())
     {
         std::cout << "No hay clientes atendidos aun." << std::endl;
         return;
     }
-    
-     std::cout << "Clientes atendidos:" << std::endl;
+
+    std::cout << "Clientes atendidos:" << std::endl;
 
     for (const auto clientes : clientesAtendidos)
     {
@@ -78,22 +79,23 @@ void ColaCliente::MostrarClienteAtendidos(){
     }
 }
 
-void ColaCliente::mostrarClientesActual(std::shared_ptr<Client> objetocliente){
+void ColaCliente::mostrarClientesActual(std::shared_ptr<Client> objetocliente)
+{
     objetocliente->clienteinfo();
-}; 
+};
 
+shared_ptr<Client> ColaCliente::BuscarClientePorID(int idCliente)
+{
+    std::queue<shared_ptr<Client>> copiaCola = ColaClientes; // Hacer una copia de la cola
 
-
-
-shared_ptr<Client> ColaCliente::BuscarClientePorID(int idCliente) {
-    std::queue<shared_ptr<Client>> copiaCola = ColaClientes;  // Hacer una copia de la cola
-
-    while (!copiaCola.empty()) {
-        shared_ptr<Client> cliente = copiaCola.front();  // Obtener el primer cliente
-        if (cliente->getid() == idCliente) {
-            return cliente;  // Cliente encontrado
+    while (!copiaCola.empty())
+    {
+        shared_ptr<Client> cliente = copiaCola.front(); // Obtener el primer cliente
+        if (cliente->getid() == idCliente)
+        {
+            return cliente; // Cliente encontrado
         }
-        copiaCola.pop();  // Eliminar el cliente ya procesado
+        copiaCola.pop(); // Eliminar el cliente ya procesado
     }
-    return nullptr;  // Si no se encuentra el cliente
+    return nullptr; // Si no se encuentra el cliente
 }

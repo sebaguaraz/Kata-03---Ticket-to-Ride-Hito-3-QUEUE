@@ -8,7 +8,8 @@ using namespace std;
 
 class Client; // Declaración adelantada
 
-class Incidente {
+class Incidente
+{
 private:
     string asunto, gravedad;
     shared_ptr<Client> cliente;
