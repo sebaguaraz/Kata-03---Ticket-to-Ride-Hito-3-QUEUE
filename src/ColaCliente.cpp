@@ -56,7 +56,6 @@ void ColaCliente::marcarClientesAtendidos(shared_ptr<Client> cliente)
 
 void ColaCliente::EliminarClienteDeCola()
 {
-
     shared_ptr<Client> cliente = ColaClientes.front();
     ColaClientes.pop();
     marcarClientesAtendidos(cliente); // se deberia marcar el cliente si el tecnico ya lo atendio
@@ -64,7 +63,6 @@ void ColaCliente::EliminarClienteDeCola()
 
 void ColaCliente::MostrarClienteAtendidos()
 {
-
     if (clientesAtendidos.empty())
     {
         std::cout << "No hay clientes atendidos aun." << std::endl;
