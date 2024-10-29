@@ -21,6 +21,7 @@ class IMessage;
 
 
 class SupportTechnical : public enable_shared_from_this<SupportTechnical> {
+//una forma de obtener un shared_ptr al propio objeto desde dentro de un método.
 private:
     string telefono;
     string name;

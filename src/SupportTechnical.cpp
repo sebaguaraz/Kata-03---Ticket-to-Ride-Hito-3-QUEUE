@@ -31,9 +31,9 @@ shared_ptr<Ticket> SupportTechnical::CrearTicket(shared_ptr<Client> objetoclient
 
 
 
-void SupportTechnical::Atender(shared_ptr<SupportTechnical> objetotecnico, shared_ptr<Ticket> ticket) {
+void SupportTechnical::Atender(shared_ptr<SupportTechnical> objetotecnico, shared_ptr<Ticket> ticket) {//se le pasa el ticket abierto encontrado
     // Lógica para atenders  
-        ticket->AddTecnico(objetotecnico);
+        ticket->AddTecnico(objetotecnico);//se le asigna el teccnico
         cout << "El tecnico " << getname() << " esta atendiendo el ticket. " << endl;
 
     
@@ -54,7 +54,7 @@ shared_ptr<IMessage> SupportTechnical::EnviarMensaje(shared_ptr<SupportTechnical
     if(notificaciones == "Whatsapp"){
 
         shared_ptr<IMessage> objeto = make_shared<Whatsapp>();
-        objeto->setMessageTecnico(shared_from_this(), mensaje);
+        objeto->setMessageTecnico(shared_from_this(), mensaje);//se pasa a si mismo el object tecnico
         return objeto;
 
     }

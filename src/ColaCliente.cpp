@@ -46,7 +46,7 @@ void ColaCliente::mostrarClientesPendientes() {
 
 
 
-void ColaCliente::marcarClientesAtendidos(shared_ptr<Client> cliente){//metodos para marcar clientes ya atendidos
+void ColaCliente::marcarClientesAtendidos(shared_ptr<Client> cliente){//se pasa el puntero cliente que se elimino de la cola para marcar como atendido
     clientesAtendidos.push_back(cliente);
 };
 

@@ -104,5 +104,10 @@ void Ticket::AlertClient(){
 
 
 void Ticket::AlertTechnical(){
-    tecnico->Alert();
+    if (tecnico!=nullptr)
+        tecnico->Alert();
+    else{
+        cout << "tecnico no asignado todavia. " << endl;
+
+    }
 }
