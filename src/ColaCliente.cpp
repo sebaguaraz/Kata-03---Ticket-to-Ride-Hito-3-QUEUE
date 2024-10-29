@@ -45,11 +45,12 @@ void ColaCliente::mostrarClientesPendientes() {
 
 
 
-
-void ColaCliente::marcarClientesAtendidos(shared_ptr<Client> cliente){//se pasa el puntero cliente que se elimino de la cola para marcar como atendido
+//el vector "clientesAtendidos" marca el cliente una vez que se elimino de la cola, pasando el puntero cliente
+void ColaCliente::marcarClientesAtendidos(shared_ptr<Client> cliente){
     clientesAtendidos.push_back(cliente);
 };
 
+//muestra el vector clientesAtendidos 
 void ColaCliente::MostrarClienteAtendidos(){
 
     if (clientesAtendidos.empty())

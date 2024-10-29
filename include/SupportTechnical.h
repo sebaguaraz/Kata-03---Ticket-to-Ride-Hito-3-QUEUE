@@ -19,9 +19,9 @@ class ColaCliente;
 class Client;
 class IMessage;
 
-
+//hereda de la clase para obtener obtiene un shared_ptr que apunta al propio objeto (this)
 class SupportTechnical : public enable_shared_from_this<SupportTechnical> {
-//una forma de obtener un shared_ptr al propio objeto desde dentro de un método.
+
 private:
     string telefono;
     string name;
@@ -35,10 +35,10 @@ public:
     string getname();
     //string getnotificaciones();
     void tecnicoinfo();
-    void Atender(shared_ptr<SupportTechnical> objetotecnico,  shared_ptr<Ticket> ticket);
+    void Atender(shared_ptr<Ticket> ticket);
     shared_ptr<Ticket> CrearTicket(shared_ptr<Client> objetocliente, string asunto, string notificaciones);
     //shared_ptr<Ticket> ActualizarTicket(shared_ptr<Ticket> ticket, string asunto);
-    shared_ptr<IMessage> EnviarMensaje( shared_ptr<SupportTechnical> tecnico,  string mensaje, string notificaciones);
+    shared_ptr<IMessage> EnviarMensaje(string mensaje, string notificaciones);
     void Alert();
 };
 

@@ -71,14 +71,13 @@ void crearTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets
                 } while (notificaciones != "Whatsapp" && notificaciones != "Facebook");
 
                 shared_ptr<Ticket> ticket = tecnico->CrearTicket(clienteSeleccionado, asunto, notificaciones);
-                listadetickets->agregarTicket(ticket);
-                ticket->setEstado("abierto");
+                listadetickets->agregarTicket(ticket);//se agrega el ticket a una lista de tickets
+                ticket->setEstado("abierto");//establece en abierto
                 cout << "Ticket creado para el cliente!" << endl;
                 cout << "Desea crear otro ticket para este cliente? (si/no): ";
                 cin >> valor;
                 cin.ignore();
             } while (valor != "no");
-            cout << notificaciones << endl;
         } else { cout << "Cliente no encontrado en la cola." << endl; }
     } else { cout << "No hay clientes en la cola." << endl; }
 }
@@ -125,8 +124,8 @@ void atenderTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTicke
             cout << "Ingrese mensaje del tecnico " << tecnico->getname() << ": ";
             getline(cin, mensajeTecnico);
 
-            tecnico->Atender(tecnico, ticket);
-            objetomensaje = tecnico->EnviarMensaje(tecnico, mensajeTecnico, ticket->getnotificaciones());
+            tecnico->Atender(ticket);
+            objetomensaje = tecnico->EnviarMensaje(mensajeTecnico, ticket->getnotificaciones());
             ticket->agregarMensaje(objetomensaje);
             ticket->AlertClient();
         } else { cout << "No hay tickets abiertos para el cliente " << objetocliente->getname() << endl; }
@@ -172,18 +171,18 @@ void enviarMensajeCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Cli
         
         ticketsCliente = listadetickets->ObtenerTickets(objetocliente);
         shared_ptr<Ticket> ticket = nullptr;
-        for (auto &t : ticketsCliente) {
-            if (t->getEstado() == "abierto") {
+        for (auto &t : ticketsCliente) {//recorre cada ticket
+            if (t->getEstado() == "abierto") {//el primero que encuentre abierto sale del bucle
                 ticket = t;
                 break;
                 }
             }
 
-        if (ticket) {
+        if (ticket) {//si se encontro alguno abierto..
             string mensajeCliente;
             cout << "Ingrese mensaje del cliente del ticket " << ticket->getincidente()->getasunto() << " : " << endl;
             getline(cin, mensajeCliente);
-            auto objetomensaje = objetocliente->EnviarMensaje(objetocliente, mensajeCliente, ticket->getnotificaciones());
+            auto objetomensaje = objetocliente->EnviarMensaje(mensajeCliente, ticket->getnotificaciones());
             if (!objetomensaje) {
                     cerr << "Error: El mensaje no fue creado correctamente." << endl;
                     return;
@@ -448,7 +447,7 @@ int main() {
                 ingresarTecnico(tecnico);
                 break;
             case 3:
-            //digo yo
+
                 crearTicket(queueclientes, listadetickets, tecnico);
                 break;
             case 4:
@@ -461,14 +460,14 @@ int main() {
                 mostrarClientesAtendidos(queueclientes);
                 break;
             case 7:
-            //digo yo
+
                 atenderTicket(queueclientes, listadetickets, tecnico, objetomensaje);
                 break;
             case 8:
                 mostrarTicketsCliente(queueclientes, listadetickets);
                 break;
             case 9:
-            //digo yo
+
                 darBajaCliente(queueclientes, listadetickets);
                 break;
             case 10:
@@ -478,7 +477,7 @@ int main() {
                 mostrarMensajesTicket(queueclientes, objetocliente, listadetickets);
                 break;
             case 12:
-            //digo yo
+
                 cambiarestadoTicket(queueclientes, ticketsCliente, listadetickets, objetocliente);
                 break;
             case 13:

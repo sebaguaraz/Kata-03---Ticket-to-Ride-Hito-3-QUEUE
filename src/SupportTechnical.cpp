@@ -31,9 +31,9 @@ shared_ptr<Ticket> SupportTechnical::CrearTicket(shared_ptr<Client> objetoclient
 
 
 
-void SupportTechnical::Atender(shared_ptr<SupportTechnical> objetotecnico, shared_ptr<Ticket> ticket) {//se le pasa el ticket abierto encontrado
+void SupportTechnical::Atender( shared_ptr<Ticket> ticket) {//se le pasa el ticket abierto encontrado
     // Lógica para atenders  
-        ticket->AddTecnico(objetotecnico);//se le asigna el teccnico
+        ticket->AddTecnico(shared_from_this());//se le asigna el teccnico 
         cout << "El tecnico " << getname() << " esta atendiendo el ticket. " << endl;
 
     
@@ -41,14 +41,14 @@ void SupportTechnical::Atender(shared_ptr<SupportTechnical> objetotecnico, share
 }
 
 
-shared_ptr<IMessage> SupportTechnical::EnviarMensaje(shared_ptr<SupportTechnical> tecnico, string mensaje, string notificaciones) {
+shared_ptr<IMessage> SupportTechnical::EnviarMensaje(string mensaje, string notificaciones) {
     // Verificar que el mensaje no esté vacío
     if (mensaje.empty()) {
         cout << "El mensaje no puede estar vacio." << endl;
         return nullptr; // O maneja de otra manera si es necesario
     }
 
-    cout << "Enviando mensaje (" << mensaje << ") de parte de: " << tecnico->getname() << " por " << notificaciones << endl;
+    cout << "Enviando mensaje (" << mensaje << ") de parte de: " << getname() << ", por " << notificaciones << endl;
 
 
     if(notificaciones == "Whatsapp"){

@@ -21,19 +21,19 @@ void Client::clienteinfo() {
     cout << "DNI: " << getdni() << endl;
 }
 
-shared_ptr<IMessage> Client::EnviarMensaje(shared_ptr<Client> cliente, const string& mensajeTexto, string notificaciones) {
+shared_ptr<IMessage> Client::EnviarMensaje(const string& mensajeTexto, string notificaciones) {
         // Crear un nuevo mensaje
         if (mensajeTexto.empty()) {
         cout << "El mensajeTexto no puede estar vacio." << endl;
         return nullptr; // O maneja de otra manera si es necesario
     }
 
-    cout << "Enviando mensaje (" << mensajeTexto << ") de parte de: " << cliente->getname() << " por " << notificaciones << endl;
+    cout << "Enviando mensaje (" << mensajeTexto << ") de parte de: " << getname() << " por " << notificaciones << endl;
 
     if(notificaciones == "Whatsapp"){
 
         shared_ptr<IMessage> objeto = make_shared<Whatsapp>();
-        objeto->setMessageClient(shared_from_this(), mensajeTexto);
+        objeto->setMessageClient(shared_from_this(), mensajeTexto);//se pasa el cliente actual a si mismo al objeto whatsapp
         return objeto;
 
     }

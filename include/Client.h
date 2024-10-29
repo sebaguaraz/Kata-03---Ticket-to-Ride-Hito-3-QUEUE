@@ -12,6 +12,7 @@
 using namespace std;
 
 class IMessage;
+//hereda de la clase para obtener obtiene un shared_ptr que apunta al propio objeto (this)
 class Client : public enable_shared_from_this<Client> {
 private:
     int id;
@@ -28,7 +29,7 @@ public:
     string getname();
     int getdni();
     void clienteinfo();
-    shared_ptr<IMessage> EnviarMensaje(shared_ptr<Client> cliente, const string& mensajeTexto, string notificaciones);
+    shared_ptr<IMessage> EnviarMensaje(const string& mensajeTexto, string notificaciones);
     void Alert();
 };
 
