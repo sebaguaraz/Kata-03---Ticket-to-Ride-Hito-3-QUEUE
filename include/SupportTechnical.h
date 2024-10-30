@@ -21,8 +21,10 @@ class IMessage;
 
 //hereda de la clase para obtener un shared_ptr del mismo objeto this
 class SupportTechnical : public enable_shared_from_this<SupportTechnical> {
+
 private:
     string telefono;
+    string name;
     string name;
 
 public:

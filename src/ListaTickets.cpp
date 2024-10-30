@@ -8,11 +8,11 @@ void ListaTickets::agregarTicket(shared_ptr<Ticket> ticket){
     listaticket.push_back(ticket);
 };
 vector<shared_ptr<Ticket>> ListaTickets::ObtenerTickets(shared_ptr<Client> objetocliente){
-    vector<shared_ptr<Ticket>>ticketsCliente;
+    vector<shared_ptr<Ticket>>ticketsCliente;//almacena los tickets encontrados
 
         for (auto& ticket : listaticket) {
             if (ticket->getcliente()->getid() == objetocliente->getid()) {
-                ticketsCliente.push_back(ticket);  // Agregar punteros a los tickets del cliente
+                ticketsCliente.push_back(ticket);  // Agregar tickets del cliente encontrado
             }
         }
         return ticketsCliente;  // Retorna los tickets encontrados
@@ -46,7 +46,7 @@ void ListaTickets::MensajesClienteActual(shared_ptr<Client> cliente) {
             cout << "Mensajes del Ticket " << ticket->getid() << " - Asunto: " << ticket->getincidente()->getasunto() << endl;
 
             // Obtener y mostrar la lista de mensajes del ticket
-            ticket->mostrarmensajes(); // Asegúrate de que este método imprime los mensajes
+            ticket->mostrarmensajes(); 
         }
     } else {
         cout << "El cliente no tiene tickets." << endl;

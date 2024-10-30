@@ -1,5 +1,3 @@
-// FALTA AGREGAR PATRONNN PARA VER POR DONDE ENVIAR LOS MENSAJE WHATSAPP, FACEBOOK, INSTAGRAM...
-// AGREGAR METODO PARA ACTUALIZAR EL TICKET, YA SEA CLIENTE: ASUNTO, PRIORIDAD ETC o TECNICO: CAMBIAR ESTADO
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -18,10 +16,11 @@
 using namespace std;
 #define MAX_NODES 7
 
+//ingresa un cliente a la cola
 void ingresarCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Client> &objetocliente) {
     string name1;
     int dni;
-
+    
     objetocliente = make_shared<Client>();
 
     cout << "Nombre del cliente: ";
@@ -35,9 +34,9 @@ void ingresarCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Client> 
     cout << "Cliente agregado a la cola!" << endl;
 }
 
+//ingresa un tecnico
 void ingresarTecnico(shared_ptr<SupportTechnical> &tecnico) {
     string name2, telefono;
-    // Inicializar el técnico si no lo está
     tecnico = make_shared<SupportTechnical>();
 
     cout << "Nombre del tecnico: ";
@@ -48,7 +47,7 @@ void ingresarTecnico(shared_ptr<SupportTechnical> &tecnico) {
     tecnico->settelefono(telefono);
     cout << "Tecnico creado!" << endl;
 }
-
+//tecnico crea el ticket asociado al cliente
 void crearTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets> &listadetickets, shared_ptr<SupportTechnical> &tecnico) {
     if (!queueclientes->IsEmpty()) {
         queueclientes->mostrarClientesPendientes();
@@ -73,8 +72,8 @@ void crearTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets
                 } while (notificaciones != "Whatsapp" && notificaciones != "Facebook");
 
                 shared_ptr<Ticket> ticket = tecnico->CrearTicket(clienteSeleccionado, asunto, notificaciones);
-                listadetickets->agregarTicket(ticket);
-                ticket->setEstado("abierto");
+                listadetickets->agregarTicket(ticket);//se agrega el ticket a una lista de tickets
+                ticket->setEstado("abierto");//establece en abierto
                 cout << "Ticket creado para el cliente!" << endl;
                 cout << "Desea crear otro ticket para este cliente? (si/no): ";
                 cin >> valor;
@@ -84,6 +83,7 @@ void crearTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets
     } else { cout << "No hay clientes en la cola." << endl; }
 }
 
+//muestra cliente actual
 void mostrarClienteParaAtender(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Client> &objetocliente) {
     if (!queueclientes->IsEmpty()) {
         objetocliente = queueclientes->ObtenerClienteDeCola();
@@ -91,16 +91,19 @@ void mostrarClienteParaAtender(shared_ptr<ColaCliente> &queueclientes, shared_pt
     } else { cout << "No hay clientes en la cola." << endl; }
 }
 
+//muestra clientes pendientes
 void mostrarClientesPendientes(shared_ptr<ColaCliente> &queueclientes) {
     if (!queueclientes->IsEmpty()) {
         queueclientes->mostrarClientesPendientes();
     } else { cout << "No hay clientes en la cola." << endl; }
 }
 
+//muestra cliente atendidos
 void mostrarClientesAtendidos(shared_ptr<ColaCliente> &queueclientes) {
     queueclientes->MostrarClienteAtendidos();
 }
 
+//tecnico atiende el ticket del cliente y envia mensaje
 void atenderTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets> &listadetickets, shared_ptr<SupportTechnical> &tecnico, shared_ptr<IMessage> &objetomensaje) {
     if (!queueclientes->IsEmpty()) {
         shared_ptr<Client> objetocliente = queueclientes->ObtenerClienteDeCola();
@@ -110,7 +113,7 @@ void atenderTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTicke
         cin.ignore();
         shared_ptr<Ticket> ticket = listadetickets->ObtenerTicketporID(idticket);
 
-        if (ticket) {
+        if (ticket) {//si se encontro...
             cout << "Atendiendo al cliente: " << objetocliente->getname() << endl;
             cout << "Ticket " << ticket->getid() << " - Asunto: " << ticket->getincidente()->getasunto() << endl;
 
@@ -126,6 +129,7 @@ void atenderTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTicke
     } else { cout << "No hay clientes en la cola." << endl; }
 }
 
+//obtiene los tickets asociado al cliente y los muestra
 void mostrarTicketsCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets> &listadetickets) {
     if (!queueclientes->IsEmpty()) {
         shared_ptr<Client> primerCliente = queueclientes->ObtenerClienteDeCola();
@@ -140,6 +144,7 @@ void mostrarTicketsCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Li
     } else { cout << "No hay clientes en la cola." << endl; }
 }
 
+//recorre todos los tickets, si estan cerrados elimina el cliente de la cola
 void darBajaCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets> &listadetickets) {
     if (!queueclientes->IsEmpty()) {
         shared_ptr<Client> objetocliente = queueclientes->ObtenerClienteDeCola();
@@ -202,7 +207,7 @@ void mostrarMensajesTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Cl
         objetocliente = queueclientes->ObtenerClienteDeCola(); // Usamos 'primerCliente' o 'front' para obtener el primero sin eliminarlo
 
         cout << "Cliente actual: " << objetocliente->getname() << endl;
-
+        //obtiene los tickets y muestra los mensajes de cada uno
         listadetickets->MensajesClienteActual(objetocliente);
     } else {
         cout << "No hay clientes en la cola." << endl;
@@ -276,8 +281,8 @@ int minDistance(int acumuladorDistancia[], bool acumuladorNodosVisitados[]) {
      */
     for (int nodo = 0; nodo < MAX_NODES; nodo++) {
         if (acumuladorNodosVisitados[nodo] == false && acumuladorDistancia[nodo] <= distancia) {
-            distancia = acumuladorDistancia[nodo];
-            nodo_menor_distancia = nodo;
+            distancia = acumuladorDistancia[nodo];//primera iteracion en nodo 0, se asigna la distancia en 0
+            nodo_menor_distancia = nodo;//y el nodo como el nodo 0
         }
     }
 
@@ -391,7 +396,7 @@ int main() {
     shared_ptr<ColaCliente> queueclientes = make_shared<ColaCliente>();
     shared_ptr<ListaTickets> listadetickets = make_shared<ListaTickets>();
     shared_ptr<IMessage> objetomensaje;
-
+    //punteros de tipo "CLASE"
     shared_ptr<Client> objetocliente;
     shared_ptr<SupportTechnical> tecnico;
     shared_ptr<Ticket> ticket;

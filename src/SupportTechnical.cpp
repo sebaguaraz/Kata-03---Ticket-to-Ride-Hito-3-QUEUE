@@ -21,6 +21,7 @@ void SupportTechnical::tecnicoinfo() {
 
 shared_ptr<Ticket> SupportTechnical::CrearTicket(shared_ptr<Client> objetocliente, string asunto, string notificaciones){
     //this->notificaciones=notificaciones;
+    //this->notificaciones=notificaciones;
     shared_ptr<Ticket> ticket= make_shared<Ticket>(objetocliente, asunto);
     ticket->setnotificaciones(notificaciones);
 
@@ -51,7 +52,7 @@ shared_ptr<IMessage> SupportTechnical::EnviarMensaje(shared_ptr<SupportTechnical
     if(notificaciones == "Whatsapp"){
 
         shared_ptr<IMessage> objeto = make_shared<Whatsapp>();
-        objeto->setMessageTecnico(shared_from_this(), mensaje);
+        objeto->setMessageTecnico(shared_from_this(), mensaje);//se pasa a si mismo el object tecnico
         return objeto;
 
     }
@@ -63,8 +64,9 @@ shared_ptr<IMessage> SupportTechnical::EnviarMensaje(shared_ptr<SupportTechnical
         return objeto;
 
     }
-    cout << "Notificación desconocida: " << notificaciones << endl;
-     return nullptr; // Retorna nullptr si la notificación no es válida
+    cout << "Notificacion desconocida." << endl;
+    return nullptr;
+
 
 }
 
