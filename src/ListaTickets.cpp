@@ -17,6 +17,16 @@ vector<shared_ptr<Ticket>> ListaTickets::ObtenerTickets(shared_ptr<Client> objet
         }
         return ticketsCliente;  // Retorna los tickets encontrados
 };
+
+shared_ptr<Ticket> ListaTickets::ObtenerTicketporID(int idticket){
+        for (auto& ticket : listaticket) {
+            if (ticket->getid() == idticket && ticket->getEstado() == "abierto") {
+                return ticket;
+            }
+        }
+        return nullptr;
+        
+};
 bool ListaTickets::IsEmpty(){
     return listaticket.empty();
 };
@@ -43,16 +53,20 @@ void ListaTickets::MensajesClienteActual(shared_ptr<Client> cliente) {
     }
 }
 
+bool ListaTickets::TodosTicketsCerrados(shared_ptr<Client> objetocliente) {
+    bool tieneTickets = false;
 
-bool ListaTickets::TodosTicketsCerrados(shared_ptr<Client> cliente){
-    vector<shared_ptr<Ticket>> ticketsCliente = ObtenerTickets(cliente);
-
-
-        // Verificar si todos los tickets están cerrados
-        for (const auto ticket : ticketsCliente) {
-            if (!(ticket->getEstado()=="cerrado")) {
+    // Verificar si todos los tickets del cliente están cerrados
+    for (const auto& ticket : listaticket) {
+        if (ticket->getcliente() == objetocliente) {
+            tieneTickets = true;
+            if (ticket->getEstado() == "abierto") {
                 return false; // Si hay algún ticket abierto, devolver false
             }
         }
-        return true; // Si todos están cerrados, devolver true
+    }
+
+    // Si el cliente no tiene tickets, devolver false
+    return tieneTickets;
 }
+

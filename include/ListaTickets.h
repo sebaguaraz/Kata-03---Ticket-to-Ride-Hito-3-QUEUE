@@ -18,7 +18,8 @@ public:
     ~ListaTickets();
     void agregarTicket(shared_ptr<Ticket> ticket);
     vector<shared_ptr<Ticket>> ObtenerTickets(shared_ptr<Client> objetocliente);
-    bool TodosTicketsCerrados(shared_ptr<Client> cliente);
+    shared_ptr<Ticket> ObtenerTicketporID(int idticket);
+    bool TodosTicketsCerrados(shared_ptr<Client> objetocliente);
     void MensajesClienteActual(shared_ptr<Client> cliente);
     bool IsEmpty();
     int size();

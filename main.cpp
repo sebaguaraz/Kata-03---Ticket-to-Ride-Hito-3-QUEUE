@@ -80,7 +80,6 @@ void crearTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets
                 cin >> valor;
                 cin.ignore();
             } while (valor != "no");
-            cout << notificaciones << endl;
         } else { cout << "Cliente no encontrado en la cola." << endl; }
     } else { cout << "No hay clientes en la cola." << endl; }
 }
@@ -105,15 +104,11 @@ void mostrarClientesAtendidos(shared_ptr<ColaCliente> &queueclientes) {
 void atenderTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTickets> &listadetickets, shared_ptr<SupportTechnical> &tecnico, shared_ptr<IMessage> &objetomensaje) {
     if (!queueclientes->IsEmpty()) {
         shared_ptr<Client> objetocliente = queueclientes->ObtenerClienteDeCola();
-        vector<shared_ptr<Ticket>> ticketsCliente = listadetickets->ObtenerTickets(objetocliente);
-
-        shared_ptr<Ticket> ticket = nullptr;
-        for (auto &t : ticketsCliente) {
-            if (t->getEstado() == "abierto") {
-                ticket = t;
-                break;
-            }
-        }
+        int idticket;
+        cout << "ingrese el id del ticket que desea atender." << endl;
+        cin >> idticket;
+        cin.ignore();
+        shared_ptr<Ticket> ticket = listadetickets->ObtenerTicketporID(idticket);
 
         if (ticket) {
             cout << "Atendiendo al cliente: " << objetocliente->getname() << endl;
@@ -123,11 +118,11 @@ void atenderTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTicke
             cout << "Ingrese mensaje del tecnico " << tecnico->getname() << ": ";
             getline(cin, mensajeTecnico);
 
-            tecnico->Atender(tecnico, ticketsCliente);
-            objetomensaje = tecnico->EnviarMensaje(tecnico, mensajeTecnico);
+            tecnico->Atender(tecnico, ticket);
+            objetomensaje = tecnico->EnviarMensaje(tecnico, mensajeTecnico,ticket->getnotificaciones());
             ticket->agregarMensaje(objetomensaje);
             ticket->AlertClient();
-        } else { cout << "No hay tickets abiertos para el cliente " << objetocliente->getname() << endl; }
+        } else { cout << "No existe ese ticket o permanece cerrado para el cliente " << objetocliente->getname() << endl; }
     } else { cout << "No hay clientes en la cola." << endl; }
 }
 
@@ -149,10 +144,10 @@ void darBajaCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTick
     if (!queueclientes->IsEmpty()) {
         shared_ptr<Client> objetocliente = queueclientes->ObtenerClienteDeCola();
         if (listadetickets->TodosTicketsCerrados(objetocliente)) {
-            cout << "Todos los tickets del cliente " << objetocliente->getname() << " han sido atendidos." << endl;
+            cout << "Todos los tickets del cliente " << objetocliente->getname() << " han sido atendidos!!" << endl;
             queueclientes->EliminarClienteDeCola();
         } else {
-            cout << "Aun hay tickets abiertos para este cliente." << endl;
+            cout << "Aun no se ah podido eliminar al cliente"<< objetocliente->getname() << endl;
         }
     } else {
         cout << "No hay clientes en la cola." << endl;
@@ -160,44 +155,46 @@ void darBajaCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<ListaTick
 }
 
 void enviarMensajeCliente(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Client> &objetocliente,
-                          vector<shared_ptr<Ticket>> &ticketsCliente, shared_ptr<ListaTickets> &listadetickets) {
+                          shared_ptr<Ticket> &ticketcliente, shared_ptr<ListaTickets> &listadetickets) {
     if (!queueclientes->IsEmpty()) {
+
+
+
+        //buscar el cliente pero que sea mediante una lista de clientes... no de la cola
         objetocliente = queueclientes->ObtenerClienteDeCola();
 
         if (!objetocliente) {
             cerr << "Error: Cliente obtenido de la cola es nulo." << endl;
             return;
         }
+        int idticket;
+        cout << "ingrese el id del ticket donde desea enviar el mensaje" << endl;
+        cin >> idticket;
+        cin.ignore();
+        
 
-        cout << "Cliente actual: " << objetocliente->getname() << endl;
-
-        ticketsCliente = listadetickets->ObtenerTickets(objetocliente);
-        for (const auto &ticket : ticketsCliente) {
-            if (ticket && ticket->getEstado() == "abierto") {
+        ticketcliente = listadetickets->ObtenerTicketporID(idticket);
+            if (ticketcliente) {
+                // Verificar si el ticket tiene un técnico asignado
+                if (ticketcliente->gettecnico() == nullptr) { 
+                    cout << "Este ticket no tiene un tecnico asignado. No se puede enviar el mensaje." << endl;
+                    return;
+                }
                 string mensajeCliente;
-                cout << "Ingrese mensaje del cliente del ticket " << ticket->getincidente()->getasunto() << " : " << endl;
+                cout << "Ingrese el mensaje del ticket " << ticketcliente->getincidente()->getasunto() << " : " << endl;
                 getline(cin, mensajeCliente);
-                auto objetomensaje = objetocliente->EnviarMensaje(objetocliente, mensajeCliente, ticket->getnotificaciones());
-                if (!objetomensaje) {
-                    cerr << "Error: El mensaje no fue creado correctamente." << endl;
-                    return;
-                }
-                if (!objetomensaje->getClient()) {
-                    cerr << "Error: El mensaje no tiene asignado el cliente." << endl;
-                    return;
-                }
+                auto objetomensaje = objetocliente->EnviarMensaje(objetocliente, mensajeCliente, ticketcliente->getnotificaciones());
+                ticketcliente->agregarMensaje(objetomensaje);
+                ticketcliente->AlertTechnical();
 
-                ticket->agregarMensaje(objetomensaje);
-                ticket->AlertTechnical();
-                break;
             } else {
-                cout << "No hay tickets abiertos para este cliente." << endl;
+                cout << "no existe el ticket con id "<< idticket << endl;
             }
-        }
     } else {
         cout << "No hay clientes en la cola." << endl;
     }
 }
+
 
 void mostrarMensajesTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Client> &objetocliente, shared_ptr<ListaTickets> &listadetickets) {
     if (!queueclientes->IsEmpty()) { // Verificamos si la cola no está vacía
@@ -213,55 +210,43 @@ void mostrarMensajesTicket(shared_ptr<ColaCliente> &queueclientes, shared_ptr<Cl
 }
 
 // Cambiar el estado de un ticket específico del primer cliente de la cola
-void cambiarestadoTicket(shared_ptr<ColaCliente> &queueclientes, vector<shared_ptr<Ticket>> &ticketsCliente, shared_ptr<ListaTickets> &listadetickets, shared_ptr<Client> &objetocliente) {
+void cambiarestadoTicket(shared_ptr<ColaCliente> &queueclientes,shared_ptr<Ticket> &ticketcliente, shared_ptr<ListaTickets> &listadetickets, shared_ptr<Client> &objetocliente) {
     if (!queueclientes->IsEmpty()) {
         // Obtener el primer cliente de la cola sin eliminarlo
         shared_ptr<Client> primerCliente = queueclientes->ObtenerClienteDeCola();
 
-        // Obtener los tickets del primer cliente de la cola
-        ticketsCliente = listadetickets->ObtenerTickets(primerCliente);
+        int idticket;
+        cout << "ingrese el id del ticket que desea modificar" << endl;
+        cin >> idticket;
+        // Obtener el ticket del primer cliente de la cola por id
+        ticketcliente = listadetickets->ObtenerTicketporID(idticket);
 
-        if (!ticketsCliente.empty()) {
-            cout << "Tickets del cliente: " << primerCliente->getname() << endl;
-
-            // Mostrar los tickets disponibles
-            for (const auto &ticket : ticketsCliente) {
-                cout << "Ticket " << ticket->getid() << " - Asunto: " << ticket->getincidente()->getasunto()
-                     << " - Estado: " << ticket->getEstado() << endl;
+        if (ticketcliente) {
+            // Verificar si el ticket tiene un técnico asignado
+            if (ticketcliente->gettecnico() == nullptr) { 
+                cout << "Este ticket no tiene un tecnico asignado. No se puede enviar el mensaje." << endl;
+                return;
             }
 
-            // Solicitar el ID del ticket que se desea modificar
-            int idTicket;
-            cout << "Ingrese el ID del ticket que desea modificar: ";
-            cin >> idTicket;
-
-            // Buscar el ticket con el ID ingresado
-            bool ticketEncontrado = false;
-            for (auto &ticket : ticketsCliente) {
-                if (ticket->getid() == idTicket) {
-                    ticketEncontrado = true;
-
+            cout << "Ticket " << ticketcliente->getid() << " - Asunto: " << ticketcliente->getincidente()->getasunto()
+                << " - Estado: " << ticketcliente->getEstado() << endl;
+            
                     // Solicitar el nuevo estado del ticket
                     string nuevoEstado;
-                    cout << "Ingrese el nuevo estado del ticket (" << ticket->getincidente()->getasunto() << ") , (abierto/cerrado): ";
+                    cout << "Ingrese el nuevo estado del ticket (" << ticketcliente->getincidente()->getasunto() << ") , (abierto/cerrado): ";
                     cin >> nuevoEstado;
 
                     // Validar el estado ingresado
                     if (nuevoEstado == "abierto" || nuevoEstado == "cerrado") {
-                        ticket->setEstado(nuevoEstado);
-                        cout << "Estado del Ticket " << ticket->getid() << " actualizado a " << nuevoEstado << "." << endl;
+                        ticketcliente->setEstado(nuevoEstado);
+                        cout << "Estado del Ticket " << ticketcliente->getid() << " actualizado a " << nuevoEstado << "." << endl;
                     } else {
-                        cout << "Estado no válido. Debe ser 'abierto', 'en proceso' o 'cerrado'." << endl;
+                        cout << "Estado no valido. Debe ser 'abierto', 'en proceso' o 'cerrado'." << endl;
                     }
-                    break;
-                }
-            }
+        
 
-            if (!ticketEncontrado) {
-                cout << "No se encontró el ticket con el ID ingresado." << endl;
-            }
         } else {
-            cout << "El cliente no tiene tickets." << objetocliente->getname() << endl;
+            cout << "No existe el ticket con id " << idticket << endl;
         }
     } else {
         cout << "No hay clientes en la cola." << endl;
@@ -412,7 +397,7 @@ int main() {
     shared_ptr<Ticket> ticket;
 
     int opcion;
-    vector<shared_ptr<Ticket>> ticketsCliente;
+    shared_ptr<Ticket> ticketcliente;
 
     do {
         cout << ".                                       SISTEMA DE TICKETS              ." << endl;
@@ -437,42 +422,48 @@ int main() {
 
         switch (opcion) {
             case 1:
+            
                 ingresarCliente(queueclientes, objetocliente);
                 break;
             case 2:
+            
                 ingresarTecnico(tecnico);
                 break;
             case 3:
-                crearTicket(queueclientes, listadetickets, tecnico);
+            crearTicket(queueclientes, listadetickets, tecnico);
                 break;
             case 4:
-                mostrarClienteParaAtender(queueclientes, objetocliente);
+            mostrarClienteParaAtender(queueclientes, objetocliente);
                 break;
             case 5:
-                mostrarClientesPendientes(queueclientes);
+            mostrarClientesPendientes(queueclientes);
                 break;
             case 6:
-                mostrarClientesAtendidos(queueclientes);
+            mostrarClientesAtendidos(queueclientes);
                 break;
             case 7:
-                atenderTicket(queueclientes, listadetickets, tecnico, objetomensaje);
+            //modificado
+            atenderTicket(queueclientes, listadetickets, tecnico, objetomensaje);
                 break;
             case 8:
-                mostrarTicketsCliente(queueclientes, listadetickets);
+            mostrarTicketsCliente(queueclientes, listadetickets);
                 break;
             case 9:
-                darBajaCliente(queueclientes, listadetickets);
+            //modificado
+            darBajaCliente(queueclientes, listadetickets);
                 break;
             case 10:
-                enviarMensajeCliente(queueclientes, objetocliente, ticketsCliente, listadetickets);
+            //modificado
+            enviarMensajeCliente(queueclientes, objetocliente, ticketcliente, listadetickets);
                 break;
             case 11:
-                mostrarMensajesTicket(queueclientes, objetocliente, listadetickets);
+            mostrarMensajesTicket(queueclientes, objetocliente, listadetickets);
                 break;
             case 12:
-                cambiarestadoTicket(queueclientes, ticketsCliente, listadetickets, objetocliente);
+            //modificado
+            cambiarestadoTicket(queueclientes, ticketcliente, listadetickets, objetocliente);
                 break;
-            case 13:
+            case 13:        
                 aloritmoDijkstra();
                 break;
             case 0:
