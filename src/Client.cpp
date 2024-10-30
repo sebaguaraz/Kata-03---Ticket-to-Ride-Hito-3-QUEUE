@@ -21,7 +21,7 @@ void Client::clienteinfo() {
     cout << "DNI: " << getdni() << endl;
 }
 
-shared_ptr<IMessage> Client::EnviarMensaje(const string& mensajeTexto, string notificaciones) {
+shared_ptr<IMessage> Client::EnviarMensaje(shared_ptr<Client>& objetocliente,const string& mensajeTexto, string notificaciones) {
         // Crear un nuevo mensaje
         if (mensajeTexto.empty()) {
         cout << "El mensajeTexto no puede estar vacio." << endl;

@@ -25,7 +25,6 @@ class SupportTechnical : public enable_shared_from_this<SupportTechnical> {
 private:
     string telefono;
     string name;
-    string name;
 
 public:
     SupportTechnical();
