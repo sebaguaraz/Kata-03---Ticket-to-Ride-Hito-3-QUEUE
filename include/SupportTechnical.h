@@ -21,7 +21,7 @@ class SupportTechnical : public enable_shared_from_this<SupportTechnical>
 {
 private:
     string telefono;
-    string name, notificaciones;
+    string name;
 
 public:
     SupportTechnical();
@@ -30,12 +30,10 @@ public:
     void setname(string name);
     string gettelefono();
     string getname();
-    string getnotificaciones();
     void tecnicoinfo();
-    void Atender(shared_ptr<SupportTechnical> objetotecnico, vector<shared_ptr<Ticket>> ticketsCliente);
     shared_ptr<Ticket> CrearTicket(shared_ptr<Client> objetocliente, string asunto, string notificaciones);
-    // shared_ptr<Ticket> ActualizarTicket(shared_ptr<Ticket> ticket, string asunto);
-    shared_ptr<IMessage> EnviarMensaje(shared_ptr<SupportTechnical> tecnico, string mensaje);
+    void Atender(shared_ptr<SupportTechnical> objetotecnico, shared_ptr<Ticket> ticketcliente);
+    shared_ptr<IMessage> EnviarMensaje(shared_ptr<SupportTechnical> tecnico, string mensaje, string notificaciones);
     void Alert();
 };
 

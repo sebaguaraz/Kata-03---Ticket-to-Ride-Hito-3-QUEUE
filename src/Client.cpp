@@ -41,7 +41,7 @@ shared_ptr<IMessage> Client::EnviarMensaje(shared_ptr<Client> cliente, const str
     {
 
         shared_ptr<IMessage> objeto = make_shared<Whatsapp>();
-        objeto->setMessageClient(shared_from_this(), mensajeTexto);
+        objeto->setMessageClient(shared_from_this(), mensajeTexto); // se pasa el cliente actual a si mismo al objeto whatsapp
         return objeto;
     }
 
@@ -52,6 +52,7 @@ shared_ptr<IMessage> Client::EnviarMensaje(shared_ptr<Client> cliente, const str
         objeto->setMessageClient(shared_from_this(), mensajeTexto);
         return objeto;
     }
+
     cout << "Notificación desconocida: " << notificaciones << endl;
     return nullptr; // Retorna nullptr si la notificación no es válida
 }

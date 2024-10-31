@@ -20,6 +20,18 @@ vector<shared_ptr<Ticket>> ListaTickets::ObtenerTickets(shared_ptr<Client> objet
     }
     return ticketsCliente; // Retorna los tickets encontrados
 };
+
+shared_ptr<Ticket> ListaTickets::ObtenerTicketporID(int idticket)
+{
+    for (auto &ticket : listaticket)
+    {
+        if (ticket->getid() == idticket && ticket->getEstado() == "abierto")
+        {
+            return ticket;
+        }
+    }
+    return nullptr;
+};
 bool ListaTickets::IsEmpty()
 {
     return listaticket.empty();
@@ -42,7 +54,7 @@ void ListaTickets::MensajesClienteActual(shared_ptr<Client> cliente)
             cout << "Mensajes del Ticket " << ticket->getid() << " - Asunto: " << ticket->getincidente()->getasunto() << endl;
 
             // Obtener y mostrar la lista de mensajes del ticket
-            ticket->mostrarmensajes(); // Asegúrate de que este método imprime los mensajes
+            ticket->mostrarmensajes();
         }
     }
     else
@@ -51,17 +63,23 @@ void ListaTickets::MensajesClienteActual(shared_ptr<Client> cliente)
     }
 }
 
-bool ListaTickets::TodosTicketsCerrados(shared_ptr<Client> cliente)
+bool ListaTickets::TodosTicketsCerrados(shared_ptr<Client> objetocliente)
 {
-    vector<shared_ptr<Ticket>> ticketsCliente = ObtenerTickets(cliente);
+    bool tieneTickets = false;
 
-    // Verificar si todos los tickets están cerrados
-    for (const auto ticket : ticketsCliente)
+    // Verificar si todos los tickets del cliente están cerrados
+    for (const auto &ticket : listaticket)
     {
-        if (!(ticket->getEstado() == "cerrado"))
+        if (ticket->getcliente() == objetocliente)
         {
-            return false; // Si hay algún ticket abierto, devolver false
+            tieneTickets = true;
+            if (ticket->getEstado() == "abierto")
+            {
+                return false; // Si hay algún ticket abierto, devolver false
+            }
         }
     }
-    return true; // Si todos están cerrados, devolver true
+
+    // Si el cliente no tiene tickets, devolver false
+    return tieneTickets;
 }

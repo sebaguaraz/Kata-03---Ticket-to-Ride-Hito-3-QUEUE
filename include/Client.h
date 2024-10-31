@@ -12,6 +12,7 @@
 using namespace std;
 
 class IMessage;
+
 class Client : public enable_shared_from_this<Client>
 {
 private:
@@ -30,6 +31,7 @@ public:
     int getdni();
     void clienteinfo();
     shared_ptr<IMessage> EnviarMensaje(shared_ptr<Client> cliente, const string &mensajeTexto, string notificaciones);
+
     void Alert();
 };
 
